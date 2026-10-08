@@ -72,6 +72,12 @@ class KeyTests(unittest.TestCase):
                 f.write('# comment\nOTHER=1\nCHECKO_API_KEY="abc123"\n')
             self.assertEqual(cf.load_key([d]), "abc123")
 
+    def test_env_txt_fallback(self):
+        with tempfile.TemporaryDirectory() as d:
+            with open(os.path.join(d, ".env.txt"), "w", encoding="utf-8") as f:
+                f.write("CHECKO_API_KEY=winkey\n")
+            self.assertEqual(cf.load_key([d]), "winkey")
+
     def test_environment_wins(self):
         os.environ["CHECKO_API_KEY"] = "fromenv"
         with tempfile.TemporaryDirectory() as d:

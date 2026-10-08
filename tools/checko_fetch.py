@@ -42,8 +42,10 @@ def load_key(search_dirs):
     if key:
         return key
     for d in search_dirs:
-        path = os.path.join(d, ".env")
-        if not os.path.isfile(path):
+        # ".env.txt" — Проводник Windows часто дописывает расширение при сохранении
+        path = next((os.path.join(d, n) for n in (".env", ".env.txt")
+                     if os.path.isfile(os.path.join(d, n))), None)
+        if not path:
             continue
         with open(path, encoding="utf-8-sig") as f:
             for line in f:
