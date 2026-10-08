@@ -86,6 +86,11 @@ def validate(data):
     flat = json.dumps(data, ensure_ascii=False)
     if re.search(r"(?<![A-Za-zА-Яа-я0-9])[CС]2(?![A-Za-zА-Яа-я0-9])", flat):
         errors.append("найден уровень «C2»: по правилу проекта английский указывается как C1/B2")
+    # решения кандидата 2026-10-08: Dorax не использовать; должность — заместитель исполнительного директора
+    if re.search(r"dorax", flat, re.I):
+        errors.append("найдено «Dorax»: по решению кандидата эта позиция в откликах не используется")
+    if re.search(r"заместител\w*\s+генеральн", flat, re.I):
+        errors.append("найдено «заместитель генерального директора»: верно «заместитель исполнительного директора»")
     return errors, warnings
 
 
@@ -291,6 +296,7 @@ def main():
         for e in errors:
             print(f"ОШИБКА: {e}", file=sys.stderr)
         sys.exit(1)
+    os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
     pages = build(data, args.out)
     print(f"OK: {args.out} · страниц: {pages} · совпадение {round(weighted_match(data['heatmap']) * 100)}%")
 
