@@ -22,6 +22,15 @@ python3 tools/build_pdf.py examples/demo.json -o out/demo.pdf
 - есть пустой раздел SWOT или неверная оценка совпадения;
 - не заполнены обязательные поля шапки.
 
+## Карточка компании (Checko API)
+
+```bash
+python tools/checko_fetch.py 7707049388            # карточка + надёжность (2 запроса)
+python tools/checko_fetch.py 7707049388 --extra    # + суды, приставы, банкротства, проверки, Федресурс (7 запросов)
+```
+
+Ключ: файл `.env` в корне проекта со строкой `CHECKO_API_KEY=...` (образец — `env.example`) или переменная окружения. Результат сохраняется в `local/checko/` (не попадает в репозиторий). Бесплатный тариф — 100 запросов в сутки. Только стандартная библиотека Python. Тесты: `python -m unittest discover -s tests`.
+
 ## Формат данных (JSON)
 
 | Раздел | Содержимое |
@@ -65,5 +74,8 @@ python3 tools/build_pdf.py examples/demo.json -o out/demo.pdf
 
 ```
 tools/build_pdf.py   генератор A4 PDF
+tools/checko_fetch.py карточка компании через Checko API
+tests/               тесты
+env.example          образец .env (без ключа)
 examples/demo.json   демо-данные (вымышленная компания)
 ```
